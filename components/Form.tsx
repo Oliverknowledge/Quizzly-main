@@ -18,7 +18,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { UserValidation } from "@/validation/user"
 import FileUploader from "./FileUploader"
-import { createUser } from "@/actions/user.actions"
+
 import { useState } from "react"
 
 import { useRouter } from "next/navigation"
@@ -30,7 +30,7 @@ export default function SignupForm() {
   const [ loading, setLoading ] = useState(false);
   const [showPassword, setShowPassword ] = useState(false);
   const router = useRouter()
-  const [userExists, setUserExists] = useState(false)
+  const [error, setError] = useState(false)
   const form = useForm<z.infer<typeof UserValidation>>({
     resolver: zodResolver(UserValidation),
     defaultValues: {
@@ -52,20 +52,22 @@ export default function SignupForm() {
   async function onSubmit(values: z.infer<typeof UserValidation>) {
     try{
       setLoading(true);
-    console.log(values)
-    const successful = await createUser({
-      name: values.name,
-      email: values.email,
-      password: values.password,
-     
-      profile_picture:  values.profile_photo?.[0]?.name  || "/DefaultAvatar.jpeg",
-    })
-    if (!successful){
-      setUserExists(true)
-    }
-    else{
-      router.push("/dashboard")
-
+    
+    
+    const res = await fetch("/api/auth/signup", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({name: values.name, email: values.email, password: values.password, profile_picture:  values.profile_photo?.[0]?.name  || "/DefaultAvatar.jpeg"}),
+    });
+    const data = await res.json();
+    if (res.ok) {
+      router.push("/sign-in");
+    } else if (res.status === 400) {
+      setError(data.message);
+      
+    } else if (res.status === 500) {
+      setError(data.message);
+      
     }
   }
     
@@ -83,7 +85,7 @@ export default function SignupForm() {
     
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
 
-      {userExists ? (
+      {error ? (
         <h3 className = "text-red-500 ">User already exists</h3>
       )
     : (<h3></h3>)

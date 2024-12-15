@@ -4,7 +4,9 @@ import Link, { LinkProps } from "next/link";
 import React, { useState, createContext, useContext } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { IconMenu2, IconX } from "@tabler/icons-react";
-
+import { Button } from "./button";
+import { signOut } from "next-auth/react";
+import { useRouter } from "next/navigation";
 interface Links {
   label: string;
   href: string;
@@ -186,5 +188,46 @@ export const SidebarLink = ({
         {link.label}
       </motion.span>
     </Link>
+  );
+};
+export const SidebarButton = ({
+  link,
+  className,
+  ...props
+}: {
+  link: Links;
+  className?: string;
+  props?: LinkProps;
+}) => {
+  const router = useRouter();
+  const { open, animate } = useSidebar();
+  const handleSignOut = async () => {
+    await signOut({
+        redirect: false,
+    });
+    router.push("/")
+}
+  return (
+    <Button 
+      onClick = {() => handleSignOut()}
+      className={cn(
+        "",
+        className
+      )}
+      variant={"ghost"}
+      size = "sm"
+      {...props}
+    >
+      {link.icon}
+      <motion.span
+        animate={{
+          display: animate ? (open ? "inline-block" : "none") : "inline-block",
+          opacity: animate ? (open ? 1 : 0) : 1,
+        }}
+        className="text-neutral-700 dark:text-neutral-200 text-sm group-hover/sidebar:translate-x-1 transition duration-150 whitespace-pre inline-block !p-0 !m-0"
+      >
+        {link.label}
+      </motion.span>
+    </Button>
   );
 };

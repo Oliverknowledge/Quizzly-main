@@ -1,8 +1,8 @@
 import mongoose from 'mongoose'
 
-const MONGODB_URI = process.env.MONGODB_URI;
+const DATABASE_URL = process.env.DATABASE_URL;
 
-if (!MONGODB_URI) {
+if (!DATABASE_URL) {
     throw new Error (" please define mongo environment variable")
 }
 
@@ -13,7 +13,7 @@ async function connectToDatabase() {
     const opts = {
         bufferCommands: false,
     }
-    await mongoose.connect(MONGODB_URI!, opts);
+    await mongoose.connect(DATABASE_URL!, opts);
     return mongoose;
 }
 

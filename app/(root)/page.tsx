@@ -5,6 +5,8 @@ import Navbar from '@/components/Navbar';
 import React from 'react'
 
 const Page = () => {
+  
+  
   return (
     <div className = "h-screen w-screen  top-0   ">
       <div className = "h-20">

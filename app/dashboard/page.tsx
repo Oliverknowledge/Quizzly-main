@@ -1,6 +1,6 @@
 
 import Dashboard from '@/components/Dashboard'
-import { SidebarDemo } from '@/components/Sidebar'
+import { SidebarDashboard } from '@/components/Sidebar'
 import { getServerSession } from 'next-auth'
 import { redirect } from 'next/navigation'
 
@@ -12,11 +12,12 @@ const Page = async () => {
     if (!session || !session.user){
       redirect("/sign-in")
     }
+
   return (
     <div className = " w-full h-full flex flex-row">
-      <SidebarDemo/>
+      <SidebarDashboard name = {session.user.name} image = {session.user.image}/>
       <div className = "">
-        <Dashboard/>
+        <Dashboard />
       </div>
     </div>
   )

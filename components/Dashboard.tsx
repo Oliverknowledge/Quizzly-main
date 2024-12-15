@@ -4,7 +4,7 @@
   import { AnimatedModalDemo } from "./animated-Button";
 
 
-  const Dashboard = () => {
+  const Dashboard = ( ) => {
     
     
       return (

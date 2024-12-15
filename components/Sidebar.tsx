@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import { Sidebar, SidebarBody, SidebarLink } from "./ui/sidebar";
+import { Sidebar, SidebarBody, SidebarButton, SidebarLink } from "./ui/sidebar";
 import {
   IconArrowLeft,
   IconBrandTabler,
@@ -11,11 +11,11 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
-import { getSession } from "next-auth/react";
 
-export function SidebarDemo() {
-  const session  = getSession();
-  console.log(session);
+
+
+export function SidebarDashboard({name, image}: {name: string | null | undefined, image: string | null | undefined}) {
+  
   const links = [
     {
       label: "Dashboard",
@@ -32,7 +32,7 @@ export function SidebarDemo() {
       ),
     },
     {
-      label: "",
+      label: "Profile",
       href: "#",
       icon: (
         <IconUserBolt className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
@@ -67,18 +67,26 @@ export function SidebarDemo() {
             {open ? <Logo /> : <LogoIcon />}
             <div className="mt-8 flex flex-col gap-2">
               {links.map((link, idx) => (
-                <SidebarLink key={idx} link={link} />
+                <div key={idx} >
+                {link.label !== "Logout" ? (
+                  <SidebarLink link={link} />
+                ) : (
+                  <SidebarButton link = {link}/>
+                  
+                )
+                }
+                </div>
               ))}
             </div>
           </div>
           <div>
             <SidebarLink
               link={{
-                label: "",
+                label: name || "user",
                 href: "#",
                 icon: (
                   <Image
-                    src="/tick.svg"
+                    src={image || "/DefaultAvatar.jpeg"}
                     className="h-7 w-7 flex-shrink-0 rounded-full"
                     width={50}
                     height={50}
@@ -87,6 +95,7 @@ export function SidebarDemo() {
                 ),
               }}
             />
+            <h3></h3>
           </div>
         </SidebarBody>
       </Sidebar>
@@ -97,7 +106,7 @@ export function SidebarDemo() {
 export const Logo = () => {
   return (
     <Link
-      href="#"
+      href="/"
       className="font-normal flex space-x-2 items-center text-sm text-black py-1 relative z-20"
     >
 

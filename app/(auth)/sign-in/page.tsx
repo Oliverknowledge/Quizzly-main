@@ -15,17 +15,20 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { validateUser } from "@/actions/user.actions"
+
 import { loginValidation } from "@/validation/user"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
 import { Highlight } from "@/components/NegativeCards"
+import { signIn } from "next-auth/react"
+import { IconBrandGithub, IconBrandGoogle } from "@tabler/icons-react"
 
 
  
 
 
 export default function SignIn() {
+  
   const [showPassword, setShowPassword] = useState(false)
   const router = useRouter()
   const [error, setError ] = useState(false)
@@ -37,15 +40,33 @@ export default function SignIn() {
       password: "",
     },
   })
+  // If the user logs in via provider
+  const handleProvider = (
+    event: React.MouseEvent<HTMLButtonElement>,
+    value: "github" | "google"
+  ) => {
+    event.preventDefault();
+    signIn(value, { callbackUrl: "/dashboard" });
+  };
   async function onSubmit(values: z.infer<typeof loginValidation>){
     try{
       setLoading(true)
       setError(false)
-      const successful = await validateUser(values.email, values.password)
-      if (successful) router.push("/dashboard")
-      else{
-        setError(true)
+      
+      const user = await signIn("credentials", {
+        email: values.email,
+        password: values.password,
+        redirect: false,
+    })
+  
+    if (user?.ok){
+       router.push("/dashboard")
+      
     }
+      else{
+    setError(true)
+  }
+  
     }
     catch(error: any){
       console.log(error.message)
@@ -137,7 +158,13 @@ export default function SignIn() {
           ))}
         </Button>
         )
-}   
+}  
+      <div className =  "flex flex-row">
+      <Button type = "button" className = "bg-gray-100 hover:bg-gray-200 border border-gray-200 text-black w-[10rem] mr-2"  onClick={(e) => handleProvider(e, "github")}>
+      <IconBrandGithub className="h-4 w-4 text-black" />Github</Button>
+      <Button type = "button" className = "bg-gray-100 hover:bg-gray-200 border border-gray-200 text-black w-[10rem]" onClick={(e) => handleProvider(e, "google") }>
+      <IconBrandGoogle className="h-4 w-4 text-black" />Google</Button>
+      </div>
       </form>
     </Form>
 
