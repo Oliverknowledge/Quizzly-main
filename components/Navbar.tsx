@@ -13,7 +13,7 @@ import { useSession } from 'next-auth/react';
 const Navbar = () => {
     const session = useSession();
     
-    console.log(session)
+    
     const router = useRouter()
     
     const handleRoute = (route: string) => {

@@ -26,13 +26,14 @@ export const authOptions = {
             credentials: {
                 email: {},
                 password:{},
+                image: {},
             },
             async authorize(credentials) {
                 try {
-                    console.log(credentials)
+                
                     await connectToDatabase();
                     const user = await User.findOne({ email: credentials?.email });
-                    console.log(user)
+                 
                     if (!user) {
                         return null;
                     }
@@ -44,7 +45,13 @@ export const authOptions = {
                     if (!isValidPassword) {
                         return null;
                     }
-                    return user;
+                  
+                    return {
+                        id: user.id,
+                        email: user.email,
+                        name: user.name,
+                        image: user.profile_picture,
+                    }
                 }
                 catch {
                     return null;
@@ -54,13 +61,18 @@ export const authOptions = {
         
     ],
     callbacks: {
-        async session({session, token, user}: {session: string, token: string, user: string}){
-            console.log("session callback", {session, token, user})
+        async session({session, token, user}: {session: any, token: any, user: any}){
+            
+            
+           
+            
             return session;
         },
-        async jwt({session, token, user}: {session: string, token:string, user:string}){
-            console.log("jwt callback", {session, token, user})
+        async jwt({session, token, user}: {session: any, token:any, user:any}){
+            
+          
             return token
+
         }
         
 

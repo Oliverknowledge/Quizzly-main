@@ -10,13 +10,13 @@ type FileUploaderProps = {
 }
  const FileUploader = ({files, onChange}: FileUploaderProps) => {
   const onDrop = useCallback((acceptedfiles: File[]) => {
-    onChange(acceptedfiles)
+    onChange(acceptedfiles) 
   }, [onChange])
   const {getRootProps, getInputProps} = useDropzone({onDrop})
   async function drop(){
     getInputProps()
     getRootProps()
-    console.log("image ")
+    
   }
   return (
     <div className="flex flex-col items-center">

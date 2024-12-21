@@ -10,20 +10,22 @@ export const createUser = async({name, email, password, profile_picture}: userTy
     try{
         connectToDB(); // Connect to database
         const existingUser= await User.findOne({ email });
-        console.log({name, email, password,  profile_picture})
         
+      
+
         if (existingUser) {
             return false;
         }
         password = await bcrypt.hash(password, 10);
-        
+    
         const user = await new User({name, email, password,  profile_picture});
         user.save()
-        console.log(existingUser)
+        
         return true;
     }
     catch(error: any){
         console.log(error.message)
     }
 }
+
 

@@ -52,12 +52,23 @@ export default function SignupForm() {
   async function onSubmit(values: z.infer<typeof UserValidation>) {
     try{
       setLoading(true);
-    
-    
+      
+      const convertFileToBase64 = (file: File): Promise<string> => {
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.readAsDataURL(file);
+          reader.onload = () => resolve(reader.result as string); // Resolve with Base64 string
+          reader.onerror = (error) => reject(error); // Reject on error
+        });
+      };
+      let profile_url: string = "/DefaultAvatar.jpeg";
+      if (values.profile_photo?.[0]) {
+        profile_url = await convertFileToBase64(values.profile_photo[0]);
+      }
     const res = await fetch("/api/auth/signup", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({name: values.name, email: values.email, password: values.password, profile_picture:  values.profile_photo?.[0]?.name  || "/DefaultAvatar.jpeg"}),
+      body: JSON.stringify({name: values.name, email: values.email, password: values.password, profile_picture:  profile_url}),
     });
     const data = await res.json();
     if (res.ok) {
